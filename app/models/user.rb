@@ -10,7 +10,7 @@ class User < ApplicationRecord
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: true
   has_secure_password # パスワードをハッシュ化するために bcrypt が必要
-  validates :password, presence: true, length: { minimum: 6 }
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
   
   # 渡された文字列のハッシュ値を返します。
   def User.digest(string)
@@ -31,7 +31,7 @@ class User < ApplicationRecord
   # 事前に remember_tokenという仮想属性を作成し、こちらで永続セッションのためハッシュ化したトークンをデータベースに記憶します。
   def remember
     self.remember_token = User.new_token # selfを記述することで仮想のremember_token属性にUser.new_tokenで生成した「ハッシュ化されたトークン情報」を代入しています。
-    update_attribute(:remember_digest, User.digest(remember_token)) # update_attributeメソッドを使ってトークンダイジェストを更新しています。
+    update_attribute(:remember_digest, User.digest(remember_token)) # update_attribute（末尾sなし）メソッドを使ってトークンダイジェストを更新しています。
   end
 
   # トークンがダイジェストと一致すればtrueを返します(has_secure_passwordのauthenticateの役割を持つようなメソッドのトークン版)
