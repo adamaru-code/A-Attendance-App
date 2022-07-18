@@ -28,6 +28,7 @@
 
 .btn-user--edit {
   margin-top: 10px;
+}  
   
   /* ユーザー一覧ページ */
 
@@ -36,4 +37,12 @@
     vertical-align: middle;
   }  
 }
+
+.label-basic-info {
+  margin-top: 5px;
+}
+
+.btn-basic-info {
+  margin: 15px 0;
+  width: 30%;
 }

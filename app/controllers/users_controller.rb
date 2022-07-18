@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   before_action :admin_user, only: :destroy
   
   def index
-    @users = User.all
+    @users = User.where.not(admin: true)
   end
   
   def show
