@@ -13,7 +13,7 @@
     <%= render 'layouts/header' %>
     <div class="container">
       <% flash.each do |message_type, msg| %>
-        <div class="alert alert-<%= message_type %>"><%= msg %></div>
+        <div class="alert alert-<%= message_type %>"><%= msg.html_safe %></div>
       <% end %>
       <%= yield %>
       <!-- 先に後半に記述されたRails.env.development?が実行、結果が真（true）であればdebug(params)が表示される仕組み -->

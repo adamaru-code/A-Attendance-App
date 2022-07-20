@@ -1,0 +1,34 @@
+<% provide(:class_text, 'basic-info') %>
+<% provide(:button_text, '更新') %>
+
+<%= form_with(model: user, url: update_basic_info_user_path(user), local: true, method: :patch) do |f| %>
+  
+  <%= f.label :name, class: "label-#{yield(:class_text)}" %>
+  <%= f.text_field :name, class: "form-control" %>
+  
+  <%= f.label :email, class: "label-#{yield(:class_text)}" %>
+  <%= f.text_field :email, class: "form-control" %>
+  
+  <%= f.label :affiliation, class: "label-#{yield(:class_text)}" %>
+  <%= f.text_field :affiliation, class: "form-control" %>
+  
+  <%= f.label :employee_number, class: "label-#{yield(:class_text)}" %>
+  <%= f.text_field :employee_number, class: "form-control" %>
+  
+  <%= f.label :uid, class: "label-#{yield(:class_text)}" %>
+  <%= f.text_field :uid, class: "form-control" %>
+  
+  <%= f.label :password, class: "label-#{yield(:class_text)}" %>
+  <%= f.text_field :password, class: "form-control" %>
+  
+  <%= f.label :basic_work_time, class: "label-#{yield(:class_text)}" %>
+  <%= f.time_field :basic_work_time, class: "form-control" %>
+
+  <%= f.label :designated_work_start_time, class: "label-#{yield(:class_text)}" %>
+  <%= f.time_field :designated_work_start_time, class: "form-control" %>
+  
+  <%= f.label :designated_work_end_time, class: "label-#{yield(:class_text)}" %>
+  <%= f.time_field :designated_work_end_time, class: "form-control" %>
+
+  <%= f.submit "更新", class: "btn btn-primary btn-block btn-#{yield(:class_text)}" %>
+<% end %>
