@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :attendances, dependent: :destroy
   # 「remember_token」という仮想の属性を作成し、user.remember_tokenメソッドを使えるよう実装します。
   attr_accessor :remember_token  
   before_save { self.email = email.downcase } # bofore_save コールバックメソッド
