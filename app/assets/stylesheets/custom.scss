@@ -96,3 +96,12 @@ p {
     color: $state-danger-text;
   }
 }
+
+/* 土曜日(日曜日)の文字色*/
+.sat {
+  color: #0000ff;
+}
+
+.sun {
+  color: #ff0000;
+}
