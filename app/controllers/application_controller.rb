@@ -4,6 +4,34 @@ class ApplicationController < ActionController::Base
   
   $days_of_the_week = %w{日 月 火 水 木 金 土} # Rubyのリテラル表記
   
+  # beforフィルター
+  
+  # paramsハッシュからユーザーを取得します。
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  # ログイン済みのユーザーか確認します。
+  def logged_in_user
+    unless logged_in?
+      store_location
+      flash[:danger] = "ログインしてください。"
+      redirect_to login_url
+    end
+  end
+  
+ # アクセスしたユーザーが現在ログインしているユーザーか確認します。
+  def correct_user
+    # @user = User.find(params[:id])
+    # redirect_to(root_url) unless @user == current_user
+    redirect_to(root_url) unless current_user?(@user) # ヘルパーのdef current_user?(user)を用いて書き換え
+  end
+  
+  # システム管理権限所有かどうか判定します。
+  def admin_user
+    redirect_to root_url unless current_user.admin?
+  end
+  
   # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
   # before_actionとして実行(今のところ対象はusersコントローラーのshowアクション)
   # その為、@first_dayと@last_dayはshowアクションからこちらへ引っ越す
