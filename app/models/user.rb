@@ -49,4 +49,22 @@ class User < ApplicationRecord
   def forget
     update_attribute(:remember_digest, nil)
   end
+  
+  #importメソッド
+  def self.import(file)
+    CSV.foreach(file.path, headers: true, skip_blanks: true, encoding: 'Shift_JIS:UTF-8') do |row|
+      # IDが見つかれば、レコードを呼び出し、見つかれなければ、新しく作成
+      user = find_by(id: row["id"]) || new
+      # CSVからデータを取得し、設定する
+      user.attributes = row.to_hash.slice(*updatable_attributes)
+      user.save
+    end
+  end
+  
+  # 更新を許可するカラムを定義
+  def self.updatable_attributes
+    ["name", "email", "affiliation", "employee_number", "uid", "password",
+    "basic_work_time", "designated_work_start_time", "designated_work_end_time",
+    "superior", "admin"]
+  end
 end

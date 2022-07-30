@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   before_action :set_one_month, only: :show
   
   def index
-    @users = User.where.not(admin: true)
+    @users = User.where.not(id: 1)
   end
   
   def show
@@ -58,7 +58,17 @@ class UsersController < ApplicationController
       flash[:danger] = "#{@user.name}の更新は失敗しました。<br>" + @user.errors.full_messages.join("<br>")
     end
     redirect_to users_url
-  end  
+  end
+  
+  def import
+    if params[:file].blank?
+      flash[:danger]= "csvファイルを選択してください"
+    else
+      User.import(params[:file])
+      flash[:success] = "csvファイルをインポートしました。"
+    end
+    redirect_to users_url
+  end
   
   private
 
