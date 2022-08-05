@@ -17,6 +17,11 @@ ActiveRecord::Schema.define(version: 20220727073927) do
     t.datetime "started_at"
     t.datetime "finished_at"
     t.string "note"
+    t.string "overwork_status"
+    t.datetime "overwork_end_time"
+    t.boolean "overwork_next_day"
+    t.string "business_process_content"
+    t.string "superior_confirmation"
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -34,9 +39,9 @@ ActiveRecord::Schema.define(version: 20220727073927) do
     t.string "affiliation"
     t.integer "employee_number"
     t.integer "uid"
-    t.datetime "basic_work_time", default: "2022-07-28 23:00:00"
-    t.datetime "designated_work_start_time", default: "2022-07-29 00:00:00"
-    t.datetime "designated_work_end_time", default: "2022-07-29 09:00:00"
+    t.datetime "basic_work_time", default: "2022-08-04 23:00:00"
+    t.datetime "designated_work_start_time", default: "2022-08-05 00:00:00"
+    t.datetime "designated_work_end_time", default: "2022-08-05 09:00:00"
     t.boolean "superior", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end

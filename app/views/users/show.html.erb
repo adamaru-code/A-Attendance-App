@@ -75,7 +75,7 @@
     <tbody>
       <% @attendances.each do |day| %>
         <tr>
-          <td><%= link_to "残業申請", "#", remote:true ,class: "btn btn-primary"%></td>
+          <td><%= link_to "残業申請", edit_overwork_request_user_attendance_path(@user, day), remote:true ,class: "btn btn-primary"%></td>
           <!--日付-->
           <td><%= l(day.worked_on, format: :short) %></td>
           <!--曜日-->
@@ -141,3 +141,6 @@
     </tfoot>
   </table>
 </div>
+
+<!--モーダルウインドウ表示-->
+<div id= "edit-overwork-request" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
