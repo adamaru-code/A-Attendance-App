@@ -26,6 +26,14 @@
   </table>
 </div>
 
+<div class="notice">
+  <% if current_user.superior? %>
+    <%= link_to "【 所属長承認申請のお知らせ 】", "#" %><br>
+    <%= link_to "【 勤怠変更申請のお知らせ 】", "#" %><br>
+    <%= link_to "【 残業申請のお知らせ 】", "#" %>
+  <% end %>
+</div>
+
 <div class="btn-users-show">
   <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
   <%= link_to "CSV出力", "#", class: "btn btn-primary" %><br>
@@ -120,7 +128,15 @@
         <td colspan="2"></td>
         <td colspan="6"></td>
         <td><%= format("%.2f", @total_working_times.to_f) %></td>
-        <td colspan="6"></td>
+        <td colspan="5"></td>
+        <td>
+          <div class="form-group">
+            <%= form_with(model: @user, local:true) do |f| %>
+              <%= f.select :user_id, [['上長A', 1], ['上長B', 2]], { include_blank: true, selected: 1 }, { id: "user_id", class: "user_class" } %></br>
+              <%= f.submit '申請', class: 'btn btn-primary' %>
+            <% end %>
+          </div>
+        </td>
       </tr>
     </tfoot>
   </table>
