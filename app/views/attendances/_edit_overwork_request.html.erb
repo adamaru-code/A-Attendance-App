@@ -30,7 +30,7 @@
               <td><%= f.check_box :overwork_next_day, id: "overwork_next_day" %></td>
               <td><%= f.text_field :business_process_content, class: "form-control" %></td>
               <td>
-                <%= f.collection_select :superior_confirmation, @superior, :id, :name,{prompt: ""}, {class: "form-control"} %>
+                <%= f.collection_select :superior_confirmation, @superior, :id, :name,{prompt: "上長を選択してください"}, {class: "form-control"} %>
               </td>
             </tr>
           </tbody>

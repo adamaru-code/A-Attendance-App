@@ -29,8 +29,26 @@
 <div class="notice">
   <% if current_user.superior? %>
     <%= link_to "【 所属長承認申請のお知らせ 】", "#" %><br>
-    <%= link_to "【 勤怠変更申請のお知らせ 】", "#" %><br>
-    <%= link_to "【 残業申請のお知らせ 】", "#" %>
+    
+    <!--勤怠変更申請のお知らせ-->
+    <div>
+      <% if @attendance_change_sum > 0 %>
+        <%= link_to "【 勤怠変更申請のお知らせ 】", edit_attendance_change_user_attendance_path(@user), remote: true, class: "notice-superior" %>
+        <span class="notice-border-superior"><%= "#{@attendance_change_sum}件の通知があります" %></span>
+      <% else %>
+        <%= "【 勤怠変更申請のお知らせ 】" %>
+      <% end %>
+    </div>
+
+    <!--残業申請のお知らせ-->
+    <div>
+      <% if @overwork_sum > 0 %>
+        <%= link_to "【 残業申請のお知らせ 】", edit_overwork_notice_user_attendance_path(@user), remote: true, class: "notice-superior" %>
+        <span class="notice-border-superior"><%= "#{@overwork_sum}件の通知があります" %></span>
+      <% else %>
+        <%= "【 残業申請のお知らせ 】" %>
+      <% end %>
+    </div>
   <% end %>
 </div>
 
@@ -99,23 +117,37 @@
           <!--在社時間-->
           <td>
             <% if day.started_at.present? && day.finished_at.present? %>
-              <%= str_times = working_times(day.started_at, day.finished_at) %>
+              <%= str_times = working_times(day.started_at, day.finished_at, day.next_day) %>
               <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
             <% end %>
           </td>
           <!--備考-->
           <td><%= day.note %></td>
           <!--終了予定時間-->
-          
-            <td></td>
-            <td></td>
-            
-              <!--時間外時間-->
-              <td></td>
-              <td></td>
+          <td><%= day.overwork_end_time.strftime("%H") if day.overwork_end_time? %></td>
+          <td><%= day.overwork_end_time.strftime("%M") if day.overwork_end_time? %></td>
+          <!--時間外時間-->
           <td>
-            <p></p>
-            <p></p>
+            <% if day.overwork_end_time.present? %>
+              <%= working_overwork_times(@user.designated_work_end_time, day.overwork_end_time, day.overwork_next_day) %>
+            <% end %>
+          </td>
+          <!--業務処理内容-->
+          <td><%= day.business_process_content %></td>
+          <!--指示者確認㊞-->
+          <td>
+            <!--残業申請-->
+            <% if day.overwork_status == "申請中" %>
+              <%= User.find(day.superior_confirmation).name %>へ残業申請中<br>
+            <% elsif (day.overwork_status == "承認") || (day.overwork_status == "否認") %>
+            　<%= User.find(day.superior_confirmation).name %>より残業<%= day.overwork_status %>済<br>
+            <% end %>
+            <!--勤怠変更申請-->
+            <% if day.attendance_change_status == "申請中" %>
+              <%= User.find(day.superior_attendance_change_confirmation).name %>へ勤怠変更申請中<br>
+            <% elsif (day.attendance_change_status == "承認") || (day.attendance_change_status == "否認") %>
+            　<%= User.find(day.superior_attendance_change_confirmation).name %>より勤怠<%= day.attendance_change_status %>済<br>
+            <% end %>
           </td>
         </tr>
       <% end %>
@@ -144,3 +176,5 @@
 
 <!--モーダルウインドウ表示-->
 <div id= "edit-overwork-request" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-overwork-notice" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-attendance-change" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

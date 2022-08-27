@@ -12,14 +12,22 @@ Rails.application.routes.draw do
     member do
       get 'edit_basic_info'
       patch 'update_basic_info'
+      # １ヶ月分の変更申請 
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
+      
     end
     resources :attendances, only: [:update] do
       member do
         # 残業申請モーダル
         get 'edit_overwork_request'
         patch 'update_overwork_request'
+        # 残業申請のお知らせ承認モーダル
+        get 'edit_overwork_notice'
+        patch 'update_overwork_notice'
+        # 勤怠承認
+        get 'edit_attendance_change'
+        patch 'update_attendance_change'
       end
     end
   end  
