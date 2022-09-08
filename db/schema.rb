@@ -24,10 +24,12 @@ ActiveRecord::Schema.define(version: 20220727073927) do
     t.datetime "overwork_end_time"
     t.boolean "overwork_next_day"
     t.string "business_process_content"
-    t.string "attendance_change_status"
     t.string "superior_confirmation"
     t.string "superior_attendance_change_confirmation"
     t.boolean "is_check"
+    t.datetime "before_started_at"
+    t.datetime "before_finished_at"
+    t.string "attendance_change_status"
     t.boolean "change_check"
     t.integer "user_id"
     t.datetime "created_at", null: false
@@ -46,9 +48,9 @@ ActiveRecord::Schema.define(version: 20220727073927) do
     t.string "affiliation"
     t.integer "employee_number"
     t.integer "uid"
-    t.datetime "basic_work_time", default: "2022-08-23 23:00:00"
-    t.datetime "designated_work_start_time", default: "2022-08-24 00:00:00"
-    t.datetime "designated_work_end_time", default: "2022-08-24 09:00:00"
+    t.datetime "basic_work_time", default: "2022-08-30 23:00:00"
+    t.datetime "designated_work_start_time", default: "2022-08-31 00:00:00"
+    t.datetime "designated_work_end_time", default: "2022-08-31 09:00:00"
     t.boolean "superior", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end

@@ -53,11 +53,11 @@
                     <td><%= day.finished_at.strftime("%H") if day.finished_at.present? %></td>
                     <td><%= day.finished_at.strftime("%M") if day.finished_at.present? %></td>
                     <!--変更後・出勤-->
-                    <td><%= day.restarted_at&.strftime("%H") if day.restarted_at&.present? %></td>
-                    <td><%= day.restarted_at&.strftime("%M") if day.restarted_at&.present? %></td>
+                    <td><%= day.restarted_at.strftime("%H") if day.restarted_at.present? %></td>
+                    <td><%= day.restarted_at.strftime("%M") if day.restarted_at.present? %></td>
                     <!--変更後・退勤-->
-                    <td><%= day.refinished_at&.strftime("%H") if day.refinished_at&.present? %></td>
-                    <td><%= day.refinished_at&.strftime("%M") if day.refinished_at&.present? %></td>
+                    <td><%= day.refinished_at.strftime("%H") if day.refinished_at.present? %></td>
+                    <td><%= day.refinished_at.strftime("%M") if day.refinished_at.present? %></td>
                     <td><%= day.note %></td>
                     <td><%= attendance.select :attendance_change_status, [["",""], ["なし","なし"], ["申請中","申請中"], ["承認","承認"], ["否認","否認"]], class: "form-control" %></td>
                     <td><%= attendance.check_box :change_check, {}, true, false %></td>

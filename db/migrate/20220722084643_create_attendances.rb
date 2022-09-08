@@ -12,10 +12,12 @@ class CreateAttendances < ActiveRecord::Migration[5.1]
       t.datetime :overwork_end_time
       t.boolean :overwork_next_day
       t.string :business_process_content
-      t.string :attendance_change_status
       t.string :superior_confirmation
       t.string :superior_attendance_change_confirmation
       t.boolean :is_check
+      t.datetime :before_started_at
+      t.datetime :before_finished_at
+      t.string :attendance_change_status
       t.boolean :change_check
       t.references :user, foreign_key: true
 

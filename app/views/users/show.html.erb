@@ -102,8 +102,16 @@
             <%= $days_of_the_week[day.worked_on.wday] %>
           </td>
           <!--出社時間-->
-          <td><%= day.started_at.strftime('%H') if day.started_at.present? %></td>
-          <td><%= day.started_at.strftime('%M') if day.started_at.present? %></td>
+          <td>
+            <% if day.started_at.present? %>
+              <%= format_hour(day.started_at) %>
+            <% end %>
+          </td> 
+          <td>
+            <% if day.started_at.present? %>
+              <%= format_min(day.started_at) %>
+            <% end %>
+          </td> 
           <!--出退社・登録ボタン-->
           <td>
             <% if btn_text = attendance_state(day) %>
@@ -111,21 +119,29 @@
             <% end %>
           </td>
           <!--退社時間-->
-          <td><%= day.finished_at.strftime('%H') if day.finished_at.present? %></td>
-          <td><%= day.finished_at.strftime('%M') if day.finished_at.present? %></td>
+          <td>
+            <% if day.finished_at.present? %>
+              <%= format_hour(day.finished_at) %>
+            <% end %>
+          </td>
+          <td>
+            <% if day.finished_at.present? %>
+              <%= format_min(day.finished_at) %>
+            <% end %>
+          </td>
           <td></td>
           <!--在社時間-->
           <td>
             <% if day.started_at.present? && day.finished_at.present? %>
-              <%= str_times = working_times(day.started_at, day.finished_at, day.next_day) %>
+              <%= str_times = working_times(day.started_at.floor_to(15.minutes), day.finished_at.floor_to(15.minutes), day.next_day) %>
               <% @total_working_times = @total_working_times.to_f + str_times.to_f %>
             <% end %>
           </td>
           <!--備考-->
           <td><%= day.note %></td>
           <!--終了予定時間-->
-          <td><%= day.overwork_end_time.strftime("%H") if day.overwork_end_time? %></td>
-          <td><%= day.overwork_end_time.strftime("%M") if day.overwork_end_time? %></td>
+          <td><%= format_hour(day.overwork_end_time) if day.overwork_end_time.present? %></td>
+          <td><%= format_min(day.overwork_end_time) if day.overwork_end_time.present? %></td>
           <!--時間外時間-->
           <td>
             <% if day.overwork_end_time.present? %>
