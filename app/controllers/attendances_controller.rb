@@ -1,9 +1,9 @@
 class AttendancesController < ApplicationController
   before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overwork_notice, :edit_attendance_change, :update_attendance_change]
-  before_action :logged_in_user, only: [:update, :edit_one_month]
-  before_action :set_attendance, only: [:update, :edit_overwork_request, :update_overwork_request, :edit_overwork_notice]
-  before_action :edit_one_month_correct_user, only: [:update, :edit_one_month, :update_one_month]
-  before_action :set_one_month, only: [:edit_one_month, :edit_overwork_notice, :edit_attendance_change]
+  before_action :logged_in_user, only: [:update, :edit_one_month, :log_attendance_change]
+  before_action :set_attendance, only: [:update, :edit_overwork_request, :update_overwork_request, :edit_overwork_notice, :log_attendance_change]
+  before_action :edit_one_month_correct_user, only: [:update, :edit_one_month, :update_one_month, :log_attendance_change]
+  before_action :set_one_month, only: [:edit_one_month, :edit_overwork_notice, :edit_attendance_change, :log_attendance_change]
   
   UPDATE_ERROR_MSG = "勤怠登録に失敗しました。やり直してください。"
   
@@ -143,6 +143,12 @@ class AttendancesController < ApplicationController
     redirect_to user_url(@user)
   end
   
+    #勤怠ログ
+  def log_attendance_change
+    @user = User.find(params[:id])
+    @attendances = @user.attendances.where(worked_on: @first_day..@last_day, attendance_change_status: "承認").order(:worked_on)
+  end
+  
   private
     # 1ヶ月分の勤怠情報を扱います。
     def attendances_params
@@ -173,11 +179,11 @@ class AttendancesController < ApplicationController
       unless current_user?(@user)
         flash[:danger] = "編集権限がありません。"
         redirect_to(root_url)
-      end  
+      end
     end
     
     def set_attendance
-      @attendance = Attendance.find(params[:id])      
+      @attendance = Attendance.find(params[:id])
     end
 
     def set_superior

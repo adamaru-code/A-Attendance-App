@@ -28,6 +28,8 @@ Rails.application.routes.draw do
         # 勤怠承認
         get 'edit_attendance_change'
         patch 'update_attendance_change'
+        # 勤怠ログ
+        get 'log_attendance_change'
       end
     end
   end  
