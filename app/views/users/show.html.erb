@@ -27,9 +27,16 @@
 </div>
 
 <div class="notice">
-  <% if current_user.superior? %>
-    <%= link_to "【 所属長承認申請のお知らせ 】", "#" %><br>
-    
+  <% if current_user.superior? && current_user?(@user) %>
+    <div>
+      <% if @one_month_approval_sum > 0 %>
+        <%= link_to "【所属長承認申請のお知らせ】", edit_one_month_approval_user_attendance_path(@user), remote: true, class: "notice-superior" %>
+        <span class="notice-border-superior"><%= "#{@one_month_approval_sum}件の通知があります" %></span>
+      <% else %>
+        <%= "【所属長承認申請のお知らせ】" %>
+      <% end %>
+    </div>
+
     <!--勤怠変更申請のお知らせ-->
     <div>
       <% if @attendance_change_sum > 0 %>
@@ -55,7 +62,7 @@
 <div class="btn-users-show">
   <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
   <%= link_to "CSV出力", "#", class: "btn btn-primary" %><br>
-  <%= link_to "勤怠修正ログ（承認済）", log_attendance_change_user_attendance_path(@user), remote: true, class: "btn btn-primary" %>
+  <%= link_to "勤怠修正ログ（承認済）", log_attendance_change_user_attendance_path(@user), class: "btn btn-primary" %>
 </div>
 
 <div>
@@ -172,26 +179,49 @@
     <tfoot>
       <!--rowspan:縦結合、colspan：横結合-->
       <tr>
-        <td></td>
         <td colspan="2"></td>
         <td colspan="6"></td>
         <td><%= format("%.2f", @total_working_times.to_f) %></td>
         <td colspan="5"></td>
-        <td>
-          <div class="form-group">
-            <%= form_with(model: @user, local:true) do |f| %>
-              <%= f.select :user_id, [['上長A', 1], ['上長B', 2]], { include_blank: true, selected: 1 }, { id: "user_id", class: "user_class" } %></br>
-              <%= f.submit '申請', class: 'btn btn-primary' %>
-            <% end %>
-          </div>
-        </td>
+          <% if current_user?(@user) %>
+            <td colspan="2">
+              <%= form_with(model: @attendance, url: attendances_update_month_request_user_path(@user), local: true, method: :patch) do |f| %>
+                <%= f.hidden_field :one_month_approval_status, value: "申請中" %>
+                <%= f.hidden_field :day, value: @first_day %>
+                  <% if @attendance.one_month_approval_status.nil? %>
+                    所属長承認 未
+                  <% elsif @attendance.one_month_approval_status == "申請中" %>
+                    <%= User.find(@attendance.superior_month_notice_confirmation).name %>へ勤怠申請中
+                  <% elsif @attendance.one_month_approval_status == "承認" || @attendance.one_month_approval_status == "否認"%>
+                    <%= User.find(@attendance.superior_month_notice_confirmation).name %>より<%= @attendance.one_month_approval_status %>
+                  <% end %>
+                <br><%= f.collection_select :superior_month_notice_confirmation, @superior, :id, :name,{prompt: ""}, {class: "form-control"} %>
+                <%= f.submit " 申請 ", class: "btn btn-primary" %>
+              <% end %>
+            </td>
+          <% end %>
       </tr>
+      <!--<tr>-->
+      <!--  <td></td>-->
+      <!--  <td colspan="2"></td>-->
+      <!--  <td colspan="6"></td>-->
+      <!--  <td><%= format("%.2f", @total_working_times.to_f) %></td>-->
+      <!--  <td colspan="5"></td>-->
+      <!--  <td>-->
+      <!--    <div class="form-group">-->
+      <!--      <%= form_with(model: @user, local:true) do |f| %>-->
+      <!--        <%= f.select :user_id, [['上長A', 1], ['上長B', 2]], { include_blank: true, selected: 1 }, { id: "user_id", class: "user_class" } %></br>-->
+      <!--        <%= f.submit '申請', class: 'btn btn-primary' %>-->
+      <!--      <% end %>-->
+      <!--    </div>-->
+      <!--  </td>-->
+      <!--</tr>-->
     </tfoot>
   </table>
 </div>
 
 <!--モーダルウインドウ表示-->
-<div id= "edit-overwork-request" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
-<div id="edit-overwork-notice" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-one-month-approval" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <div id="edit-attendance-change" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
-<div id="log-attendance-change" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-overwork-notice" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>
+<div id="edit-overwork-request" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true"></div>

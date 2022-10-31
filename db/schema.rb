@@ -32,6 +32,9 @@ ActiveRecord::Schema.define(version: 20220727073927) do
     t.string "attendance_change_status"
     t.boolean "change_check"
     t.integer "user_id"
+    t.string "superior_month_notice_confirmation"
+    t.string "one_month_approval_status"
+    t.boolean "approval_check"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_attendances_on_user_id"
@@ -48,9 +51,9 @@ ActiveRecord::Schema.define(version: 20220727073927) do
     t.string "affiliation"
     t.integer "employee_number"
     t.integer "uid"
-    t.datetime "basic_work_time", default: "2022-08-30 23:00:00"
-    t.datetime "designated_work_start_time", default: "2022-08-31 00:00:00"
-    t.datetime "designated_work_end_time", default: "2022-08-31 09:00:00"
+    t.datetime "basic_work_time", default: "2022-10-25 23:00:00"
+    t.datetime "designated_work_start_time", default: "2022-10-26 00:00:00"
+    t.datetime "designated_work_end_time", default: "2022-10-26 09:00:00"
     t.boolean "superior", default: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end

@@ -1,5 +1,5 @@
 class AttendancesController < ApplicationController
-  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overwork_notice, :edit_attendance_change, :update_attendance_change]
+  before_action :set_user, only: [:edit_one_month, :update_one_month, :edit_overwork_notice, :edit_attendance_change, :update_attendance_change, :update_month_request, :edit_one_month_approval]
   before_action :logged_in_user, only: [:update, :edit_one_month, :log_attendance_change]
   before_action :set_attendance, only: [:update, :edit_overwork_request, :update_overwork_request, :edit_overwork_notice, :log_attendance_change]
   before_action :edit_one_month_correct_user, only: [:update, :edit_one_month, :update_one_month, :log_attendance_change]
@@ -26,6 +26,7 @@ class AttendancesController < ApplicationController
     redirect_to @user
   end
   
+  #勤怠変更
   def edit_one_month
     @superior = User.where(superior:true).where.not(id:current_user.id)
   end
@@ -61,12 +62,12 @@ class AttendancesController < ApplicationController
     flash[:danger] = "無効な入力データがあった為、更新をキャンセルしました。"
     redirect_to attendances_edit_one_month_user_url(date: params[:date])
   end
-  
+
   #勤怠変更の承認
   def edit_attendance_change
     @change_attendances = Attendance.where(superior_attendance_change_confirmation: @user.id, attendance_change_status: "申請中").order(:user_id, :worked_on).group_by(&:user_id)
   end
-  
+
   def update_attendance_change
     attendance_change_params.each do |id, item|
       attendance = Attendance.find(id)
@@ -94,13 +95,13 @@ class AttendancesController < ApplicationController
     end
     redirect_to user_url(@user)
   end
-  
+
   #残業申請
   def edit_overwork_request
     @user = User.find(params[:user_id])
     @superior = User.where(superior:true).where.not(id:current_user.id)
   end
-  
+
   def update_overwork_request
     @user = User.find(params[:user_id])
     @superior = User.where(superior:true).where.not(id:current_user.id)
@@ -116,7 +117,7 @@ class AttendancesController < ApplicationController
     end
     redirect_to user_url(@user)
   end
-  
+
   #残業申請の承認
   def edit_overwork_notice
     @overwork_attendances = Attendance.where(superior_confirmation: @user.id, overwork_status: "申請中").order(:user_id, :worked_on).group_by(&:user_id)
@@ -142,11 +143,62 @@ class AttendancesController < ApplicationController
     end
     redirect_to user_url(@user)
   end
+
+  #1ヶ月分の勤怠申請
+  def update_month_request
+    @superior = User.where(superior:true).where.not(id:current_user.id)
+    @attendance = @user.attendances.find_by(worked_on: params[:attendance][:day])
+    if month_request_params[:superior_month_notice_confirmation].present?
+      @attendance.update(month_request_params)
+      flash[:success] = "#{@user.name}の1か月分の申請をしました。"
+    else
+      flash[:danger]= "所属長を選択してください。"
+    end
+    redirect_to user_url(@user)
+  end
+
+   #1ヶ月分の勤怠所属長承認
+  def edit_one_month_approval
+    @month_attendances = Attendance.where(superior_month_notice_confirmation: @user.id, one_month_approval_status: "申請中").order(:user_id, :worked_on).group_by(&:user_id)
+  end
+
+  def update_one_month_approval
+    @user = User.find(params[:user_id])
+    month_approval_params.each do |id, item|
+      attendance = Attendance.find(id)
+      if item[:approval_check]
+        if item[:one_month_approval_status] == "なし"
+          item[:one_month_approval_status] = nil
+          item[:approval_check] = nil
+        end 
+        attendance.update(item)
+        flash[:success] = "勤怠申請の承認結果を送信しました。"
+      else
+        flash[:danger] = "承認確認のチェックを入れてください。" 
+      end
+    end
+    redirect_to user_url(@user)
+  end
   
     #勤怠ログ
   def log_attendance_change
     @user = User.find(params[:id])
-    @attendances = @user.attendances.where(worked_on: @first_day..@last_day, attendance_change_status: "承認").order(:worked_on)
+    if params["select_year(1i)"].present? && params["select_month(2i)"].present?
+      @first_day = (params["select_year(1i)"] + "-" + params["select_month(2i)"] + "-01").to_date
+      @attendances = @user.attendances.where(worked_on: @first_day..@first_day.end_of_month, attendance_change_status: "承認").order(:worked_on)
+    end
+    # if Attendance.where(one_month_approval_status: "承認").order(:user_id, :worked_on).group_by(&:user_id)   
+    #   if params["select_year(1i)"].nil?
+    #     @first_day = Date.current.beginning_of_month
+    #   else
+    #     @first_day = Date.parse("#{params["select_year(1i)"]}/#{params["select_month(2i)"]}/1")
+    #   end
+    #   #@attendances = @user.attendances.where(worked_on: {}, attendance_change_check_status: "承認済").order(:user_id, :worked_on).group_by(&:user_id)
+    #   #@first_day = Date.current.beginning_of_month
+    #   @last_day = @first_day.end_of_month   
+    #   #@attendances = @user.attendances.where(worked_on: @first_day..@last_day).where(attendance_change_check_status: "勤怠変更承認済").order(:worked_on)
+    #   @attendances = @user.attendances.where(worked_on: @first_day..@last_day, attendance_change_status: "承認").order(:worked_on)
+    # end
   end
   
   private
@@ -169,6 +221,15 @@ class AttendancesController < ApplicationController
     
     def overwork_notice_params
       params.require(:user).permit(attendances: [:is_check, :overwork_status])[:attendances]
+    end
+    
+    def month_request_params
+      params.require(:attendance).permit(:superior_month_notice_confirmation, :one_month_approval_status)
+    end
+    
+    def month_approval_params
+      params.require(:user).permit(attendances: [:approval_check, 
+                                                 :one_month_approval_status])[:attendances]
     end
     
     # beforeフィルター
