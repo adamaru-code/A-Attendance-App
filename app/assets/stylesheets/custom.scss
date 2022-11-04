@@ -111,3 +111,22 @@ p {
 .modal-dialog-center {
   padding-top: 10%;
 }
+
+/* お知らせの文字色*/
+// .notice-superior {  
+//   color: #ff0000;
+//   font-weight: bold;
+// }
+
+.notice-border-superior {
+  border: solid 2px #ff0000;
+  color: #ff0000;
+  font-weight: bold;
+}
+
+// .notice-superior:hover {
+//   border: solid 2px #f96250;
+//   color: #f96250;
+//   font-weight: bold;
+//   text-decoration: none;
+// }
