@@ -8,7 +8,7 @@
           <% if current_user.admin? %>
             <li><%= link_to "ユーザ一覧", users_path %></li>
             <li><%= link_to "出勤社員一覧", list_of_employees_user_path(current_user) %></li>
-            <li><%= link_to "拠点情報の修正", "#" %></li>
+            <li><%= link_to "拠点情報の修正", bases_path %></li>
             <li><%= link_to "システム基本情報の修正", edit_system_info_user_path(current_user) %></li>
           <% end %>
           <li class="dropdown">
@@ -23,7 +23,7 @@
                 <%= link_to "ログアウト", logout_path, method: :delete %>
               </li>
             </ul>
-          </li>            
+          </li>
         <% else %>
           <li><%= link_to "ログイン", login_path %></li>
         <% end %>

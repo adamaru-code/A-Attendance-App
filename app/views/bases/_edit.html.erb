@@ -1,0 +1,27 @@
+<% provide(:title, 'Edit') %>
+
+<div class="modal-dialog modal-lg modal-dialog-center">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+      </button>
+      <h1 class="modal-title">拠点情報編集</h1>
+    </div>
+    <div class="modal-body">
+      <%= form_with(model: @base, url: basis_path(@base), local: true) do |f| %>
+      
+        <%= f.label :"拠点番号", class: "label-base--edit" %>
+        <%= f.number_field :base_number, class: "form-control", min: 1, max: 99 %>
+        <%= f.label :"拠点名", class: "label-base--edit" %>
+        <%= f.text_field :base_name, class: "form-control" %>
+        <%= f.label :"拠点種類", class: "label-base--edit" %>
+        <%= f.select :base_type, ["出勤", "退勤"], {include_blank: "選択してください。"}, class: "form-control" %>
+
+        <div class="center">
+          <%= f.submit "更新", class: "btn btn-primary btn-block btn-base--edit" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

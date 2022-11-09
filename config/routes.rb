@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'bases/index'
+
   root 'static_pages#top'
   get '/signup', to: 'users#new'
   
@@ -23,6 +25,7 @@ Rails.application.routes.draw do
       # システム基本情報の修正 
       get 'edit_system_info'
     end
+    
     resources :attendances, only: [:update] do
       member do
         # 残業申請モーダル
@@ -41,5 +44,7 @@ Rails.application.routes.draw do
         get 'log_attendance_change'
       end
     end
-  end  
+  end
+  
+  resources :bases
 end
