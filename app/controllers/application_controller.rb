@@ -32,6 +32,14 @@ class ApplicationController < ActionController::Base
     redirect_to root_url unless current_user.admin?
   end
   
+  # 管理者は勤怠画面の表示と編集は不可
+  def not_allow_admin_user
+    if current_user.admin?
+      flash[:danger] = "権限がありません。"
+      redirect_to root_url
+    end
+  end
+  
   # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
   # before_actionとして実行(今のところ対象はusersコントローラーのshowアクション)
   # その為、@first_dayと@last_dayはshowアクションからこちらへ引っ越す
