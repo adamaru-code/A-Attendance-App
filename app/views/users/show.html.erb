@@ -2,11 +2,15 @@
 <div>
   <table class="table table-bordered table-condensed user-table">
     <tr>
-      <td>
-        <%= link_to "⇦", user_path(date: @first_day.prev_month), class: "btn btn-primary" %>
-        【<%= l(@first_day, format: :middle) %>】勤怠管理表
-        <%= link_to "⇨", user_path(date: @first_day.next_month), class: "btn btn-primary" %>
-      </td>
+      <% if current_user?(@user) || current_user.admin? %>
+        <td>
+          <%= link_to "⇦", user_path(date: @first_day.prev_month), class: "btn btn-primary" %>
+          【<%= l(@first_day, format: :middle) %>】勤怠管理表
+          <%= link_to "⇨", user_path(date: @first_day.next_month), class: "btn btn-primary" %>
+        </td>
+      <% else %>
+        <td>【<%= l(@first_day, format: :middle) %>】勤怠管理表</td>
+      <% end %>
       <td>
         指定勤務開始時間：<%= format_basic_info(@user.designated_work_start_time) %></br>
         指定勤務終了時間：<%= format_basic_info(@user.designated_work_end_time) %>
@@ -60,16 +64,20 @@
 </div>
 
 <div class="btn-users-show">
-  <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
-  <%= link_to "CSV出力", "#", class: "btn btn-primary" %><br>
-  <%= link_to "勤怠修正ログ（承認済）", log_attendance_change_user_attendance_path(@user), class: "btn btn-primary" %>
+  <% if current_user?(@user) || current_user.admin? %>
+    <%= link_to "勤怠を編集", attendances_edit_one_month_user_path(date: @first_day), class: "btn btn-primary" %>
+    <%= link_to "CSV出力", "#", class: "btn btn-primary" %><br>
+    <%= link_to "勤怠修正ログ（承認済）", log_attendance_change_user_attendance_path(@user), class: "btn btn-primary" %>
+  <% end %>
 </div>
 
 <div>
   <table class="table table-bordered table-condensed table-hover" id="table-attendances">
     <thead>
       <tr><!--rowspan:縦結合、colspan：横結合-->
-        <th rowspan="3">残業申請</th>
+        <% if current_user?(@user) || current_user.admin? %>
+          <th rowspan="3">残業申請</th> 
+        <% end %>
         <th rowspan="3">日付</th>
         <th rowspan="3">曜日</th>
         <th colspan="8">【実績】</th>
@@ -100,7 +108,9 @@
     <tbody>
       <% @attendances.each do |day| %>
         <tr>
-          <td><%= link_to "残業申請", edit_overwork_request_user_attendance_path(@user, day), remote:true ,class: "btn btn-primary"%></td>
+          <% if current_user?(@user) || current_user.admin? %>
+            <td><%= link_to "残業申請", edit_overwork_request_user_attendance_path(@user, day), remote:true ,class: "btn btn-primary"%></td>
+          <% end %>
           <!--日付-->
           <td><%= l(day.worked_on, format: :short) %></td>
           <!--曜日-->

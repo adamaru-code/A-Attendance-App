@@ -182,23 +182,11 @@ class AttendancesController < ApplicationController
   
     #勤怠ログ
   def log_attendance_change
-    @user = User.find(params[:id])
+    @user = User.find(params[:user_id])
     if params["select_year(1i)"].present? && params["select_month(2i)"].present?
       @first_day = (params["select_year(1i)"] + "-" + params["select_month(2i)"] + "-01").to_date
       @attendances = @user.attendances.where(worked_on: @first_day..@first_day.end_of_month, attendance_change_status: "承認").order(:worked_on)
     end
-    # if Attendance.where(one_month_approval_status: "承認").order(:user_id, :worked_on).group_by(&:user_id)   
-    #   if params["select_year(1i)"].nil?
-    #     @first_day = Date.current.beginning_of_month
-    #   else
-    #     @first_day = Date.parse("#{params["select_year(1i)"]}/#{params["select_month(2i)"]}/1")
-    #   end
-    #   #@attendances = @user.attendances.where(worked_on: {}, attendance_change_check_status: "承認済").order(:user_id, :worked_on).group_by(&:user_id)
-    #   #@first_day = Date.current.beginning_of_month
-    #   @last_day = @first_day.end_of_month   
-    #   #@attendances = @user.attendances.where(worked_on: @first_day..@last_day).where(attendance_change_check_status: "勤怠変更承認済").order(:worked_on)
-    #   @attendances = @user.attendances.where(worked_on: @first_day..@last_day, attendance_change_status: "承認").order(:worked_on)
-    # end
   end
   
   private
