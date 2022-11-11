@@ -37,7 +37,7 @@
                 <% end %>
               </td>
               <td><%= attendance.text_field :note, class: "form-control" %></td>
-              <td><%= attendance.collection_select :superior_attendance_change_confirmation, @superior, :id, :name, {prompt: "選択してください", selected: ""}, {class: "form-control"} %></td>
+              <td><%= attendance.collection_select :superior_attendance_change_confirmation, @superior, :name, :name, {prompt: "選択してください", selected: ""}, {class: "form-control"} %></td>
             </tr>
           <% end %>
         <% end %>

@@ -131,8 +131,10 @@
           </td> 
           <!--出退社・登録ボタン-->
           <td>
-            <% if btn_text = attendance_state(day) %>
-              <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+            <% if current_user?(@user) %>
+              <% if btn_text = attendance_state(day) %>
+                <%= link_to "#{btn_text}", user_attendance_path(@user, day), method: :patch, class: "btn btn-primary btn-attendance" %>
+              <% end %>
             <% end %>
           </td>
           <!--退社時間-->
@@ -177,9 +179,9 @@
             <% end %>
             <!--勤怠変更申請-->
             <% if day.attendance_change_status == "申請中" %>
-              <%= User.find(day.superior_attendance_change_confirmation).name %>へ勤怠変更申請中<br>
+              <%= day.superior_attendance_change_confirmation %>へ勤怠変更申請中<br>
             <% elsif (day.attendance_change_status == "承認") || (day.attendance_change_status == "否認") %>
-            　<%= User.find(day.superior_attendance_change_confirmation).name %>より勤怠<%= day.attendance_change_status %>済<br>
+            　<%= day.superior_attendance_change_confirmation %>より勤怠<%= day.attendance_change_status %>済<br>
             <% end %>
           </td>
         </tr>
