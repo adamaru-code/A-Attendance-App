@@ -65,7 +65,7 @@ class AttendancesController < ApplicationController
 
   #勤怠変更の承認
   def edit_attendance_change
-    @change_attendances = Attendance.where(superior_attendance_change_confirmation: @user.name, attendance_change_status: "申請中").order(:user_id, :worked_on).group_by(&:user_id)
+    @change_attendances = Attendance.where(superior_attendance_change_confirmation: @user.name, attendance_change_status: "申請中").order(:worked_on).group_by(&:user_id)
   end
 
   def update_attendance_change
