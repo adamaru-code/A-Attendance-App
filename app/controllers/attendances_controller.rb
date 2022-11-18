@@ -43,6 +43,9 @@ class AttendancesController < ApplicationController
           elsif item[:restarted_at].blank? && item[:refinished_at].present?
             flash[:danger] = "出勤時間が必要です。"
             redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
+          elsif item[:restarted_at].present? && item[:refinished_at].present? && item[:restarted_at].to_s > item[:refinished_at].to_s
+            flash[:danger] = "時刻に誤りがあります。"
+            redirect_to attendances_edit_one_month_user_url(date: params[:date]) and return
           end
           attendance = Attendance.find(id)
           attendance.attendance_change_status = "申請中"
