@@ -87,6 +87,20 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
   
+  # def import
+  #   if params[:file].blank?
+  #     flash[:danger] = "CSVファイルが選択されていません。"
+  #   redirect_to users_url
+  #   else
+  #     if User.import(params[:file])
+  #       flash[:success] = "CSVファイルのインポートに成功しました。"
+  #     else
+  #       flash[:danger] = "CSVファイルのインポートに失敗しました。"
+  #     end
+  #     redirect_to users_url
+  #   end
+  # end
+  
   def list_of_employees
     @users = User.all.includes(:attendances)
   end
